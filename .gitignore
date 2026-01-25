@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+instance/
+# Note: Since you're using BLOB storage, your .db file might get heavy.
+# Usually, we don't push .db files, but if you want the data on your laptop:
+# database.db

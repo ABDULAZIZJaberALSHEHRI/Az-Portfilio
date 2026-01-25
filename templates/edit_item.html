@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Edit Item</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <section id="contact" style="height: 100vh; display: flex; align-items: center; justify-content: center;">
+        <div class="contact-info-upper-container" style="padding: 2rem; width: 450px;">
+            <h2 class="title" style="font-size: 1.5rem;">Edit {{ type }}</h2>
+	    <form action="/edit/{{ type }}/{{ item.id }}" method="POST" enctype="multipart/form-data">
+    		<label>Title:</label>
+    		<input type="text" name="title" value="{{ item.title }}" required style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ccc;">
+    
+    		<label>Change Image:</label>
+    		<input type="file" name="image_file" accept="image/*" style="width: 100%; margin-bottom: 10px;">
+
+    		{% if type == 'project' %}
+    		<label>GitHub (Mandatory):</label>
+    		<input type="text" name="github" value="{{ item.github }}" required style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 10px;">
+    
+    		<label>Live Demo (Optional):</label>
+    		<input type="text" name="demo" value="{{ item.demo }}" placeholder="Leave blank if none" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 10px;">
+    		{% endif %}
+
+    		<button type="submit" class="btn btn-color-1">Save Changes</button>
+	    </form>
+        </div>
+    </section>
+</body>
+</html>

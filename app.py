@@ -1,0 +1,157 @@
+import os
+import sqlite3
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from werkzeug.utils import secure_filename
+
+app = Flask(__name__)
+app.secret_key = os.getenv('FLASK_SECRET_KEY')  # Change this for your OCI production
+DB_PATH = 'database.db'
+
+UPLOAD_FOLDER = 'static/assets/certificates' # Path for certificates
+PROJECT_FOLDER = 'static/assets' # Path for projects
+ALLOWED_EXTENSIONS = {'pdf','png', 'jpg', 'jpeg', 'gif'} # Security whitelist
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# --- DATABASE SETUP ---
+def get_db_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    """Initializes the database tables if they don't exist."""
+    with get_db_connection() as conn:
+        # Projects Table
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS projects (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                image_data BLOB	,
+		image_mimetype TEXT,
+                github TEXT,
+                demo TEXT
+            )
+        ''')
+        # Certificates Table
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS certificates (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                image BLOB,
+		image_mimetype TEXT
+            )
+        ''')
+	# skills
+	conn.execute('''
+	    CREATE TABLE IF NOT EXISTS skills(
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		name TEXT NOT NULL,
+		level TEXT NOT NULL,
+		category TEXT NOT NULL
+	    )
+	''')
+        conn.commit()
+
+init_db()
+
+# --- ROUTES ---
+
+@app.route('/')
+def index():
+    conn = get_db_connection()
+    # Fetch all projects and only the first 2 certificates for the landing page
+    projects = conn.execute('SELECT * FROM projects').fetchall()
+    certificates = conn.execute('SELECT * FROM certificates LIMIT 2').fetchall()
+    conn.close()
+    return render_template('index.html', 
+                           projects=projects, 
+                           certificates=certificates, 
+                           admin=session.get('logged_in'))
+
+@app.route('/certificates')
+def all_certificates():
+    conn = get_db_connection()
+    certificates = conn.execute('SELECT * FROM certificates').fetchall()
+    conn.close()
+    return render_template('certificates.html', 
+                           certificates=certificates, 
+                           admin=session.get('logged_in'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # 'password' here refers to the name attribute in your HTML: <input name="password">
+        user_input = request.form.get('password') 
+        
+        # Compare it against the password stored in your .env file
+        if user_input == os.getenv('ADMIN_PASSWORD'): 
+            session['logged_in'] = True
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid Password')
+            
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('index'))
+
+@app.route('/edit/<type>/<int:id>', methods=['GET', 'POST'])
+def edit_item(type, id):
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    table = 'projects' if type == 'project' else 'certificates'
+    conn = get_db_connection()
+
+    if request.method == 'POST':
+        title = request.form['title']
+        # For now, we update the title. Image handling will be added next.
+        conn.execute(f'UPDATE {table} SET title = ? WHERE id = ?', (title, id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('index') if type == 'project' else url_for('all_certificates'))
+
+    item = conn.execute(f'SELECT * FROM {table} WHERE id = ?', (id,)).fetchone()
+    conn.close()
+    return render_template('edit_item.html', item=item, type=type)
+
+
+@app.route('/add/<type>', methods=['GET', 'POST'])
+def add_item(type):
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        title = request.form['title']
+        file = request.files.get('image_file') # Get the uploaded file
+        
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            # Decide folder based on type
+            folder = UPLOAD_FOLDER if type == 'certificate' else PROJECT_FOLDER
+            file.save(os.path.join(folder, filename))
+            
+            # Save the path to the DB (matching your seed.py format)
+            image_path = f"./assets/{'certificates/' if type == 'certificate' else ''}{filename}"
+            
+            conn = get_db_connection()
+            if type == 'project':
+                conn.execute('INSERT INTO projects (title, image, github, demo) VALUES (?, ?, ?, ?)',
+                             (title, image_path, request.form['github'], request.form['demo']))
+            else:
+                conn.execute('INSERT INTO certificates (title, image) VALUES (?, ?)',
+                             (title, image_path))
+            conn.commit()
+            conn.close()
+            return redirect(url_for('index') if type == 'project' else url_for('all_certificates'))
+            
+    return render_template('add_item.html', type=type)
+
+if __name__ == '__main__':
+    # Running on 0.0.0.0 so it's accessible on your OCI Instance
+    app.run(host='0.0.0.0', port=5000, debug=True)

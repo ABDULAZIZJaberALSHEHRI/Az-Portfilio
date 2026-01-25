@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certificates - Abdulaziz Alshehri</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='mediaqueries.css') }}" />
+  </head>
+  <body>
+    <section id="certificates">
+      <p class="section__text__p1">Browse My Full Collection</p>
+      <h1 class="title">All Certificates</h1>
+      <div class="experience-details-container">
+        <div class="about-containers">
+          
+          {% for cert in certificates %}
+          <div class="details-container color-container">
+            <div class="article-container">
+              <img
+                src="{{ url_for('static', filename=cert.image.replace('./', '')) }}"
+                alt="{{ cert.title }}"
+                class="project-img"
+              />
+            </div>
+            <h2 class="experience-sub-title project-title">{{ cert.title }}</h2>
+            
+            {% if admin %}
+            <div class="btn-container" style="margin-bottom: 10px;">
+              <button class="btn btn-color-1" onclick="location.href='/edit/certificate/{{ cert.id }}'">
+                Edit Certificate
+              </button>
+            </div>
+            {% endif %}
+
+            <div class="btn-container">
+              <button
+                class="btn btn-color-2 project-btn"
+                onclick="location.href='{{ url_for('static', filename=cert.image.replace('./', '')) }}'"
+              >
+                Display
+              </button>
+            </div>
+          </div>
+          {% endfor %}
+
+        </div>
+      </div>
+    </section>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>
+{% endblock %}
