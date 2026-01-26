@@ -363,6 +363,11 @@ section {
   text-align: center;
 }
 
+.color-container .article-container {
+  display: block;
+  width: 100%;
+}
+
 article {
   display: flex;
   flex-direction: column;
