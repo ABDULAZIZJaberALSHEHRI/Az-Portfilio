@@ -275,11 +275,16 @@ section {
   gap: 2rem;
   margin-bottom: 2rem;
   margin-top: 2rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 1000px;
 }
 
 .about-details-container {
   justify-content: center;
   flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .about-containers,
@@ -305,11 +310,25 @@ section {
   border: rgb(53, 53, 53) 0.1rem solid;
   border-color: rgb(163, 163, 163);
   text-align: center;
+  min-width: 250px;
 }
 
 .section-container {
-  gap: 4rem;
-  height: 80%;
+  gap: 2rem;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.text-container {
+  width: 100%;
+  max-width: 1000px;
+  text-align: center;
+  padding: 0 1rem;
+  color: rgb(85, 85, 85);
+  line-height: 1.6;
 }
 
 .section__pic-container {
@@ -396,12 +415,15 @@ article .icon {
 .contact-info-upper-container {
   display: flex;
   justify-content: center;
+  gap: 2rem;
   border-radius: 2rem;
   border: rgb(53, 53, 53) 0.1rem solid;
   border-color: rgb(163, 163, 163);
-  background: (250, 250, 250);
+  background: white;
   margin: 2rem auto;
-  padding: 0.5rem;
+  padding: 2rem;
+  max-width: 800px;
+  flex-wrap: wrap;
 }
 
 .contact-info-container {
@@ -409,11 +431,21 @@ article .icon {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  margin: 1rem;
 }
 
 .contact-info-container p {
-  font-size: larger;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.contact-info-container a {
+  color: #0066cc;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.contact-info-container a:hover {
+  color: #0052a3;
 }
 
 .contact-icon {
@@ -427,12 +459,35 @@ article .icon {
 /* FOOTER SECTION */
 
 footer {
-  height: 26vh;
-  margin: 0 1rem;
+  margin-top: 3rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  background: #f9f9f9;
+}
+
+.footer-nav {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.footer-nav a:hover {
+  color: #0066cc;
 }
 
 footer p {
   text-align: center;
+  color: #666;
+  margin: 0;
 }
 .menu-links {
   display: none;

@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Abdulaziz Alshehri</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mediaqueries.css') }}">
+    <style>
+        .edit-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0,102,204,0.1);
+        }
+        .current-image {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .current-image img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .btn-group button,
+        .btn-group a {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .btn-submit {
+            background-color: #0066cc;
+            color: white;
+        }
+        .btn-submit:hover {
+            background-color: #0052a3;
+        }
+        .btn-cancel {
+            background-color: #ddd;
+            color: #333;
+        }
+        .btn-cancel:hover {
+            background-color: #bbb;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-container">
+        <h1>Edit Profile</h1>
+        
+        {% if profile %}
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" value="{{ profile.name or '' }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="bio">Bio / Short Description</label>
+                <textarea id="bio" name="bio" required>{{ profile.bio or '' }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="career_objective">Career Objective</label>
+                <textarea id="career_objective" name="career_objective" required>{{ profile.career_objective or '' }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Current Profile Image</label>
+                <div class="current-image">
+                    <img src="{{ url_for('get_profile_image') }}" alt="Current Profile Picture">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="image_file">Change Profile Image</label>
+                <input type="file" id="image_file" name="image_file" accept="image/*">
+                <small style="color: #666;">Leave empty to keep current image</small>
+            </div>
+            
+            <div class="btn-group">
+                <button type="submit" class="btn-submit">Save Changes</button>
+                <a href="{{ url_for('index') }}" class="btn-cancel">Cancel</a>
+            </div>
+        </form>
+        {% else %}
+        <p style="text-align: center; color: #666;">No profile found.</p>
+        <div class="btn-group">
+            <a href="{{ url_for('index') }}" class="btn-cancel">Go Back</a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
+{% endblock %}

@@ -20,10 +20,10 @@
           <div class="details-container color-container">
             <div class="article-container">
               <img
-                src="{{ url_for('static', filename=cert.image.replace('./', '')) }}"
-                alt="{{ cert.title }}"
-                class="project-img"
-              />
+                  src="{{ url_for('serve_media', category='certificate', identifier=cert.id) }}"
+                  alt="{{ cert.title }}"
+                  class="project-img"
+                />
             </div>
             <h2 class="experience-sub-title project-title">{{ cert.title }}</h2>
             
@@ -32,14 +32,16 @@
               <button class="btn btn-color-1" onclick="location.href='/edit/certificate/{{ cert.id }}'">
                 Edit Certificate
               </button>
+              <button class="btn btn-color-2" onclick="if(confirm('Delete {{ cert.title }}?')) location.href='/delete/certificate/{{ cert.id }}'" style="background-color: #d32f2f;">
+                Delete Certificate
+              </button>
             </div>
             {% endif %}
 
             <div class="btn-container">
               <button
                 class="btn btn-color-2 project-btn"
-                onclick="location.href='{{ url_for('static', filename=cert.image.replace('./', '')) }}'"
-              >
+                onclick="showImagePopup('{{ url_for('serve_media', category='certificate', identifier=cert.id) }}')">
                 Display
               </button>
             </div>
@@ -50,7 +52,20 @@
       </div>
     </section>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <div id="certModal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; cursor:pointer;" onclick="this.style.display='none'">
+      <span style="position:absolute; top:20px; right:40px; color:white; font-size:50px;">&times;</span>
+      <img id="modalImg" style="max-width:90%; max-height:80%; border: 5px solid white; border-radius: 10px;">
+  </div>
+
+  <script>
+  // This function captures the image link and shows the modal
+  function showImagePopup(src) {
+      const modal = document.getElementById('certModal');
+      const img = document.getElementById('modalImg');
+      img.src = src;
+      modal.style.display = 'flex'; // Use flex to center the image
+  }
+  </script>
   </body>
 </html>
 {% endblock %}

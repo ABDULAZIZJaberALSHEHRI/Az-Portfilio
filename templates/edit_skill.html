@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<section id="contact" style="padding-top: 100px; display: flex; flex-direction: column; align-items: center;">
+    <h2 class="title">Edit Skill: {{ skill.name }}</h2>
+    <div class="contact-info-upper-container" style="width: 400px; padding: 2rem; border-radius: 2rem; border: rgb(53, 53, 53) 0.1rem solid;">
+        <form method="POST">
+            <label>Skill Name:</label>
+            <input type="text" name="name" value="{{ skill.name }}" required class="btn-container" style="width: 100%; padding: 10px; margin-bottom: 1rem; border-radius: 10px; border: 1px solid #ccc;">
+            
+            <label>Proficiency Level:</label>
+            <select name="level" style="width: 100%; padding: 10px; margin-bottom: 1rem; border-radius: 10px;">
+                <option value="Basic" {% if skill.level == 'Basic' %}selected{% endif %}>Basic</option>
+                <option value="Intermediate" {% if skill.level == 'Intermediate' %}selected{% endif %}>Intermediate</option>
+                <option value="Advanced" {% if skill.level == 'Advanced' %}selected{% endif %}>Advanced</option>
+            </select>
+
+            <label>Category:</label>
+            <select name="category" style="width: 100%; padding: 10px; margin-bottom: 1.5rem; border-radius: 10px;">
+                <option value="frontend" {% if skill.category == 'frontend' %}selected{% endif %}>Frontend</option>
+                <option value="backend" {% if skill.category == 'backend' %}selected{% endif %}>Backend</option>
+            </select>
+
+            <button type="submit" class="btn btn-color-1">Update Skill</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

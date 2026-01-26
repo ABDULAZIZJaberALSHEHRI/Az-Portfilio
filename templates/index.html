@@ -6,46 +6,58 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Abdulaziz Alshehri</title>
+    <title>{{ profile.name if profile else 'Abdulaziz Alshehri' }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='mediaqueries.css') }}">
   </head>
   <body>
     <section id="profile">
       <div class="section__pic-container">
-       <img src="{{ url_for('static', filename='assets/profile_pic.jpg') }}" class="profile_pic"/>
+        <img src="{{ url_for('get_profile_image') }}" class="profile_pic" alt="Profile Picture"/>
+        {% if admin %}
+        <a href="{{ url_for('edit_profile') }}" style="position: absolute; bottom: 0; right: 0; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 4px; font-size: 12px; text-decoration: none; cursor: pointer;">Edit</a>
+        {% endif %}
       </div>
       <div class="section__text">
         <p class="section__text__p1">Hello, I'm</p>
-        <h1 class="title">Abdulaziz Alshehri</h1>
-        <p class="section__text__p2">Backend Developer</p>
+        <h1 class="title">{{ profile.name if profile else 'Abdulaziz Alshehri' }}</h1>
+        <p class="section__text__p2">{{ profile.bio if profile else 'Backend Developer' }}</p>
         <div class="btn-container">
           <button
             class="btn btn-color-2"
-            onclick="window.open('./static/assets/Abdulaziz Alshehri, software engineering (CV).pdf')"
+            onclick="window.open('{{ url_for('serve_media', category='document', identifier='resume') }}')"
           >
             Download CV
           </button>
+          {% if admin %}
+          <button
+            class="btn btn-color-1"
+            onclick="location.href='{{ url_for('edit_cv') }}'"
+          >
+            Update CV
+          </button>
+          {% endif %}
           <button class="btn btn-color-1" onclick="location.href='./#contact'">
             Contact Info
           </button>
         </div>
         <div id="socials-container">
           <img
-	    src="{{ url_for('static', filename='assets/linkedin.png') }}"
-            alt="My LinkedIn profile"
+            src="{{ url_for('serve_media', category='icon', identifier='linkedin') }}"
+            alt="LinkedIn"
             class="icon"
             onclick="location.href='https://www.linkedin.com/in/abdulaziz-alshehri-241252182/'"
           />
           <img
-	    src="{{ url_for('static', filename='assets/github.png') }}"
-            alt="My Github profile"
+            src="{{ url_for('serve_media', category='icon', identifier='github') }}"
+            alt="GitHub"
             class="icon"
             onclick="location.href='https://github.com/ABDULAZIZJaberALSHEHRI'"
           />
         </div>
       </div>
     </section>
+
     <section id="about">
       <p class="section__text__p1">Get To Know More</p>
       <h1 class="title">About Me</h1>
@@ -53,40 +65,26 @@
         <div class="about-details-container">
           <div class="about-containers">
             <div class="details-container">
-              <img
-		src="{{ url_for('static', filename='assets/experience.png') }}"
-                alt="Experience icon"
-                class="icon"
-              />
+              <img src="{{ url_for('serve_media', category='icon', identifier='experience') }}" alt="Experience" class="icon" />
               <h3>Experience</h3>
-              <p>1 year </p>
+              <p>1 year</p>
             </div>
             <div class="details-container">
-              <img
-		src="{{ url_for('static', filename='assets/education.png') }}"
-                alt="Education icon"
-                class="icon"
-              />
+              <img src="{{ url_for('serve_media', category='icon', identifier='education') }}" alt="Education" class="icon" />
               <h3>Education</h3>
-              <p>B.Sc. Bachelors Degree in software engineering</p>
+              <p>B.Sc. Software Engineering</p>
             </div>
           </div>
           <div class="text-container">
             <p>
-              Backend developer. Has the ability to design complex requirements of clients and into high-tech and reliable software,
-              Expert in back-end development by JAVA , SPRINGBOOT and MySQL database. Looking for backend position where
-              I can use my skills and knowledge to efficiently contribute to the growth and success of the company.
+              {{ profile.career_objective if profile and profile.career_objective else 'Backend Developer with expertise in designing complex requirements and building reliable software solutions.' }}
             </p>
           </div>
         </div>
       </div>
-      <img
-	src="{{ url_for('static', filename='assets/arrow.png') }}"
-        alt="Arrow icon"
-        class="icon arrow"
-        onclick="location.href='./#experience'"
-      />
+      <img src="{{ url_for('serve_media', category='icon', identifier='arrow') }}" alt="Arrow" class="icon arrow" onclick="location.href='./#experience'" />
     </section>
+
     <section id="experience">
       <p class="section__text__p1">Explore My</p>
       <h1 class="title">Experience</h1>
@@ -95,210 +93,161 @@
           <div class="details-container">
             <h2 class="experience-sub-title">Frontend Development</h2>
             <div class="article-container">
+              {% for skill in skills if skill.category == 'frontend' %}
               <article>
-                <img
-		  src="{{ url_for('static', filename='assets/checkmark.png') }}"
-                  alt="Experience icon"
-                  class="icon"
-                />
+                <img src="{{ url_for('serve_media', category='icon', identifier='checkmark') }}" class="icon" />
                 <div>
-                  <h3>HTML</h3>
-                  <p>Intermediate</p>
+                  <h3>{{ skill.name }}</h3>
+                  <p>{{ skill.level }}</p>
+                  {% if admin %}
+                  <div style="display: flex; gap: 10px;">
+                      <a href="{{ url_for('edit_skill', id=skill.id) }}" style="font-size: 0.7rem; color: blue;">Edit</a>
+                      <a href="{{ url_for('add_skill', id=skill.id) }}" style="font-size: 0.7rem; color: green;">add</a>
+                      <a href="{{ url_for('delete_skill', id=skill.id) }}" style="font-size: 0.7rem; color: red;" onclick="return confirm('Delete {{ skill.name }}?')">Remove</a>
+                  </div>                 
+                  {% endif %}
                 </div>
               </article>
-              <article>
-                <img
-		  src="{{ url_for('static', filename='assets/checkmark.png') }}"
-                  alt="Experience icon"
-                  class="icon"
-                />
-                <div>
-                  <h3>CSS</h3>
-                  <p>Intermediate</p>
-                </div>
-              </article>
-              <article>
-                <img
-		  src="{{ url_for('static', filename='assets/checkmark.png') }}"
-                  alt="Experience icon"
-                  class="icon"
-                />
-                <div>
-                  <h3>JavaScript</h3>
-                  <p>Intermediate</p>
-                </div>
-              </article>
+              {% endfor %}
             </div>
           </div>
+
           <div class="details-container">
             <h2 class="experience-sub-title">Backend Development</h2>
             <div class="article-container">
+              {% for skill in skills if skill.category == 'backend' %}
               <article>
-                <img
- 		  src="{{ url_for('static', filename='assets/checkmark.png') }}"
-                  alt="Experience icon"
-                  class="icon"
-                />
+                <img src="{{ url_for('serve_media', category='icon', identifier='checkmark') }}" class="icon" />
                 <div>
-                  <h3>MySQL</h3>
-                  <p>Basic</p>
+                  <h3>{{ skill.name }}</h3>
+                  <p>{{ skill.level }}</p>
+                  {% if admin %}
+                  <div style="display: flex; gap: 10px;">
+                    <a href="{{ url_for('edit_skill', id=skill.id) }}" style="font-size: 0.7rem; color: blue;">Edit</a>
+                    <a href="{{ url_for('add_skill', id=skill.id) }}" style="font-size: 0.7rem; color: green;">add</a>
+                    <a href="{{ url_for('delete_skill', id=skill.id) }}" style="font-size: 0.7rem; color: red;" onclick="return confirm('Delete {{ skill.name }}?')">Remove</a>
+                  </div>
+                  {% endif %}
                 </div>
               </article>
-              <article>
-                <img
-		  src="{{ url_for('static', filename='assets/checkmark.png') }}"
-                  alt="Experience icon"
-                  class="icon"
-                />
-                <div>
-                  <h3>JAVA</h3>
-                  <p>Advanced</p>
-                </div>
-              </article>
-              <article>
-                <img
-		  src="{{ url_for('static', filename='assets/checkmark.png') }}"
-                  alt="Experience icon"
-                  class="icon"
-                />
-                <div>
-                  <h3>SPRINGBOOT</h3>
-                  <p>Advanced</p>
-                </div>
-              </article>
+              {% endfor %}
             </div>
           </div>
+
         </div>
       </div>
-      <img
-	src="{{ url_for('static', filename='assets/arrow.png') }}"
-        alt="Arrow icon"
-        class="icon arrow"
-        onclick="location.href='./#projects'"
-      />
     </section>
-   {% if admin %}
-    <div class="btn-container" style="margin-bottom: 20px;">
-       <button class="btn btn-color-1" onclick="location.href='/add/project'">+ Add New Project</button>
-       <button class="btn btn-color-1" onclick="location.href='/add/certificate'">+ Add New Certificate</button>
-    </div>
-   {% endif %}
+
     <section id="projects">
       <p class="section__text__p1">Browse My Recent</p>
       <h1 class="title">Projects</h1>
+      {% if admin %}
+      <div class="btn-container" style="margin-bottom: 20px;">
+         <button class="btn btn-color-1" onclick="location.href='/add/project'">+ Add Project</button>
+      </div>
+      {% endif %}
       <div class="experience-details-container">
         <div class="about-containers">
           {% for project in projects %}
           <div class="details-container color-container">
             <div class="article-container">
-              <img src="{{ url_for('static', filename=project.image.replace('./', '')) }}" alt="{{ project.title }}" class="project-img" />
+              <img src="{{ url_for('serve_media', category='project', identifier=project.id) }}" alt="{{ project.title }}" class="project-img" />
             </div>
             <h2 class="experience-sub-title project-title">{{ project.title }}</h2>
-            
-            {% if admin %}
-            <div class="btn-container" style="margin-bottom: 10px;">
-              <button class="btn btn-color-1" onclick="location.href='/edit/project/{{ project.id }}'">Edit Item</button>
-            </div>
-            {% endif %}
-
             <div class="btn-container">
               <button class="btn btn-color-2 project-btn" onclick="window.open('{{ project.github }}', '_blank')">Github</button>
-              {% if project.demo %}
-              <button class="btn btn-color-2 project-btn" onclick="location.href='{{ project.demo }}'">Live Demo</button>
+              {% if admin %}
+                <button class="btn btn-color-1" onclick="location.href='/edit/project/{{ project.id }}'">Edit</button>
+                <button class="btn btn-color-2" onclick="if(confirm('Delete {{ project.title }}?')) location.href='/delete/project/{{ project.id }}'" style="background-color: #d32f2f;">Delete</button>
               {% endif %}
             </div>
           </div>
           {% endfor %}
         </div>
       </div>
-      <img
-	src="{{ url_for('static', filename='assets/checkmark.png') }}"
-        alt="Arrow icon"
-        class="icon arrow"
-        onclick="location.href='./#contact'"
-      />
     </section>
+
     <section id="certificates">
       <p class="section__text__p1">Browse My Recent</p>
       <h1 class="title">Certificates</h1>
+      {% if admin %}
+        <div class="btn-container" style="margin-bottom: 20px; display: flex; justify-content: center; gap: 1rem;">
+            <button class="btn btn-color-1" onclick="location.href='/add/certificate'">+ Add Certificate</button>
+        </div>
+      {% endif %}
       <div class="experience-details-container">
         <div class="about-containers">
           {% for cert in certificates %}
           <div class="details-container color-container">
             <div class="article-container">
-              <img src="{{ url_for('static', filename=cert.image.replace('./', '')) }}" alt="{{ cert.title }}" class="project-img" />
+              <img src="{{ url_for('serve_media', category='certificate', identifier=cert.id) }}" alt="{{ cert.title }}" class="project-img" />
             </div>
             <h2 class="experience-sub-title project-title">{{ cert.title }}</h2>
             
             {% if admin %}
             <div class="btn-container" style="margin-bottom: 10px;">
-              <button class="btn btn-color-1" onclick="location.href='/edit/certificate/{{ cert.id }}'">Edit Item</button>
+              <button class="btn btn-color-1" onclick="location.href='/edit/certificate/{{ cert.id }}'">Edit</button>
+              <button class="btn btn-color-2" onclick="if(confirm('Delete {{ cert.title }}?')) location.href='/delete/certificate/{{ cert.id }}'" style="background-color: #d32f2f;">Delete</button>
             </div>
             {% endif %}
 
             <div class="btn-container">
-              <button class="btn btn-color-2 project-btn" onclick="location.href='{{ url_for('static', filename=cert.image.replace('./', '')) }}'">Display</button>
+              <button class="btn btn-color-2 project-btn" onclick="showImagePopup('{{ url_for('serve_media', category='certificate', identifier=cert.id) }}')">Display</button>
             </div>
           </div>
-          
           {% endfor %}
           
-          <button class="btn btn-color-2 project-btn" onclick="location.href='/certificates'">Load more</button>
+          <div class="btn-container" style="width: 100%; justify-content: center; margin-top: 2rem;">
+            <button class="btn btn-color-2 project-btn" onclick="location.href='/certificates'">View All Certificates</button>
+          </div>
         </div>
       </div>
-      <img
-	src="{{ url_for('static', filename='assets/arrow.png') }}"
-        alt="Arrow icon"
-        class="icon arrow"
-        onclick="location.href='./#contact'"
-      />
     </section>
+
     <section id="contact">
       <p class="section__text__p1">Get in Touch</p>
       <h1 class="title">Contact Me</h1>
-
       <div class="contact-info-upper-container">
         <div class="contact-info-container">
-          <img
-	    src="{{ url_for('static', filename='assets/email.png') }}"
-            alt="Email icon"
-            class="icon contact-icon email-icon"
-          />
+          <img src="{{ url_for('serve_media', category='icon', identifier='email') }}" class="icon contact-icon" />
           <p><a href="mailto:Abdulaziz-jaber@hotmail.com">Abdulaziz-jaber@hotmail.com</a></p>
         </div>
         <div class="contact-info-container">
-          <img
-	    src="{{ url_for('static', filename='assets/linkedin.png') }}"
-            alt="LinkedIn icon"
-            class="icon contact-icon"
-          />
+          <img src="{{ url_for('serve_media', category='icon', identifier='linkedin') }}" class="icon contact-icon" />
           <p><a href="https://www.linkedin.com/in/abdulaziz-alshehri-241252182/">LinkedIn</a></p>
         </div>
         <div class="contact-info-container">
-          <img
-	    src="{{ url_for('static', filename='assets/phone icon.png') }}"
-            alt="LinkedIn icon"
-            class="icon contact-icon"
-          />
-          <p><a href="https://wa.me/966554666991">0554666991</a></p>
+          <img src="{{ url_for('serve_media', category='icon', identifier='phone icon') }}" class="icon contact-icon" />
+          <p><a href="tel:0554666991">0554666991</a></p>
         </div>
-  
       </div>
     </section>
-    <footer>
-      <nav>
-        <div class="nav-links-container">
-          <ul class="nav-links">
-            <li><a href="#about">About</a></li>
-            <li><a href="#experience">Experience</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#certificates">Certificates</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </div>
-      </nav>
-    </footer>
-    <script src="script.js"></script>
+
+  <footer>
+    <div class="footer-nav">
+      <a href="{{ url_for('index') }}#about">About</a>
+      <a href="{{ url_for('index') }}#experience">Experience</a>
+      <a href="{{ url_for('index') }}#projects">Projects</a>
+      <a href="{{ url_for('all_certificates') }}">Certificates</a>
+      <a href="{{ url_for('index') }}#contact">Contact</a>
+    </div>
+    <p>Copyright &#169; 2024 Abdulaziz Alshehri. All Rights Reserved.</p>
+  </footer>
+
+  <div id="certModal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; cursor:pointer;" onclick="this.style.display='none'">
+    <span style="position:absolute; top:20px; right:40px; color:white; font-size:50px;">&times;</span>
+    <img id="modalImg" style="max-width:90%; max-height:80%; border: 5px solid white; border-radius: 10px;">
+  </div>
+
+  <script>
+  // This function captures the image link and shows the modal
+  function showImagePopup(src) {
+      const modal = document.getElementById('certModal');
+      const img = document.getElementById('modalImg');
+      img.src = src;
+      modal.style.display = 'flex'; // Use flex to center the image
+  }
+  </script>
   </body>
 </html>
 {% endblock %}

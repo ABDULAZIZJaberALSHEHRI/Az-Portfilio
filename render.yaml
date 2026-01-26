@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: portfolio
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python migrate_to_blob.py"
+    startCommand: "python app.py"
+    envVars:
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        value: "8000"
