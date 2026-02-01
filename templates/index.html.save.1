@@ -95,19 +95,19 @@
             <div class="article-container">
               {% for skill in skills if skill.category == 'frontend' %}
               <article>
-		{% if skill.icon %}
-		    <img 
-		      src="{{ url_for('serve_skill_icon', skill_id=skill.id) }}" 
-		      class="icon experience-icon" 
-		      alt="{{ skill.name }} icon" 
-		    />
-		  {% else %}
-		    <img 
-		      src="{{ url_for('serve_media', category='icon', identifier='checkmark') }}" 
-		      class="icon experience-icon" 
-		      alt="Checkmark" 
-		    />
-		  {% endif %}
+{% if skill.icon %}
+<img 
+src="{{ url_for('serve_skill_icon', skill_id=skill.id) }}" 
+class="icon experience-icon" 
+alt="{{ skill.name }} icon" 
+/>
+{% else %}
+<img 
+src="{{ url_for('serve_media', category='icon', identifier='checkmark') }}" 
+class="icon experience-icon" 
+alt="Checkmark" 
+/>
+{% endif %}
                 <div>
                   <h3>{{ skill.name }}</h3>
                   <p>{{ skill.level }}</p>
@@ -129,19 +129,7 @@
             <div class="article-container">
               {% for skill in skills if skill.category == 'backend' %}
               <article>
-		{% if skill.icon %}
-		    <img 
-		      src="{{ url_for('serve_skill_icon', skill_id=skill.id) }}" 
-		      class="icon experience-icon" 
-		      alt="{{ skill.name }} icon" 
-		    />
-		  {% else %}
-		    <img 
-		      src="{{ url_for('serve_media', category='icon', identifier='checkmark') }}" 
-		      class="icon experience-icon" 
-		      alt="Checkmark" 
-		    />
-		  {% endif %}
+                <img src="{{ url_for('serve_media', category='icon', identifier='checkmark') }}" class="icon" />
                 <div>
                   <h3>{{ skill.name }}</h3>
                   <p>{{ skill.level }}</p>

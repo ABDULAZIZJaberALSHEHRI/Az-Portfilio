@@ -3,10 +3,10 @@
 <section id="contact" style="padding-top: 100px; display: flex; flex-direction: column; align-items: center;">
     <h2 class="title">Add New Skill</h2>
     <div class="contact-info-upper-container" style="width: 400px; padding: 2rem; border-radius: 2rem; border: rgb(53, 53, 53) 0.1rem solid;">
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
             <label>Skill Name:</label>
-            <input type="text" name="name" placeholder="e.g. Docker" required class="btn-container" style="width: 100%; padding: 10px; margin-bottom: 1rem; border-radius: 10px; border: 1px solid #ccc;">
-            
+            <input type="text" name="name" placeholder="e.g. Docker" required class="btn-container" style="width: 100%; padding: 10px; margin-bottom: 1rem; border-radius: 10px;">
+
             <label>Level:</label>
             <select name="level" style="width: 100%; padding: 10px; margin-bottom: 1rem; border-radius: 10px;">
                 <option value="Basic">Basic</option>
@@ -15,10 +15,14 @@
             </select>
 
             <label>Category:</label>
-            <select name="category" style="width: 100%; padding: 10px; margin-bottom: 1.5rem; border-radius: 10px;">
+            <select name="category" style="width: 100%; padding: 10px; margin-bottom: 1rem; border-radius: 10px;">
                 <option value="frontend">Frontend</option>
                 <option value="backend">Backend</option>
             </select>
+
+            <label>Skill Icon (Optional):</label>
+            <input type="file" name="icon_file" accept="image/*" 
+                   style="width: 100%; padding: 10px; margin-bottom: 1.5rem; border-radius: 10px;">
 
             <button type="submit" class="btn btn-color-1">Add Skill</button>
         </form>

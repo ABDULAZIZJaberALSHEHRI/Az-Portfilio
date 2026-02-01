@@ -1,10 +1,6 @@
-import io
 import os
 import sqlite3
-from flask import Flask, render_template, request, redirect, url_for, session, flash, Response, send_file
-from dotenv import load_dotenv 
-
-load_dotenv()
+from flask import Flask, render_template, request, redirect, url_for, session, flash, Response
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')  # Change this for your OCI production
@@ -44,18 +40,17 @@ def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
                 image BLOB,
-                image_mimetype TEXT
+		        image_mimetype TEXT
             )
         ''')
-    # skills
+	# skills
         conn.execute('''
             CREATE TABLE IF NOT EXISTS skills(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 level TEXT NOT NULL,
                 category TEXT NOT NULL,
-	        icon BLOB,
-        	icon_mimetype TEXT
+		icon BLOB
             )
         ''')
         conn.execute('''
@@ -119,16 +114,15 @@ def serve_media(category, identifier):
 @app.route('/skill_icon/<int:skill_id>')
 def serve_skill_icon(skill_id):
     conn = get_db_connection()
-    # Ensure you are selecting icon_mimetype here!
-    skill = conn.execute('SELECT icon, icon_mimetype FROM skills WHERE id = ?', (skill_id,)).fetchone()
+    skill = conn.execute('SELECT icon FROM skills WHERE id = ?', (skill_id,)).fetchone()
     conn.close()
 
     if skill and skill['icon']:
+        # Convert binary data to a file-like object
         return send_file(
             io.BytesIO(skill['icon']),
-            mimetype=skill['icon_mimetype'] or 'image/png' # Fallback to png if empty
+            mimetype='image/png' # Or image/jpeg depending on what you upload
         )
-    # Fallback to checkmark if no custom icon exists
     return redirect(url_for('serve_media', category='icon', identifier='checkmark'))
 
 @app.route('/')
@@ -156,13 +150,12 @@ def edit_skill(id):
         
         # Handle the icon upload
         icon_file = request.files.get('icon_file')
-
+        
         if icon_file and icon_file.filename != '':
             # A new file was uploaded, use it
             icon_binary = icon_file.read()
-            icon_mimetype = icon_file.content_type
-            conn.execute('UPDATE skills SET name=?, level=?, category=?, icon=?, icon_mimetype=? WHERE id=?',
-                         (name, level, category, icon_binary, icon_mimetype, id))
+            conn.execute('UPDATE skills SET name=?, level=?, category=?, icon=? WHERE id=?', 
+                         (name, level, category, icon_binary, id))
         else:
             # No new file uploaded, keep the existing icon
             conn.execute('UPDATE skills SET name=?, level=?, category=? WHERE id=?', 
@@ -174,6 +167,7 @@ def edit_skill(id):
 
     conn.close()
     return render_template('edit_skill.html', skill=skill)
+
 
 @app.route('/certificates')
 def all_certificates():
@@ -347,28 +341,20 @@ def edit_cv():
 def add_skill():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
-
+    
     if request.method == 'POST':
         name = request.form['name']
         level = request.form['level']
         category = request.form['category']
+	icon = request.form['icon']
         
-        # 1. Capture the file from the 'icon_file' input field
-        icon_file = request.files.get('icon_file')
-        
-        # 2. Convert the image to binary data if a file was uploaded
-        icon_binary = icon_file.read() if icon_file and icon_file.filename != '' else None
-        icon_mimetype = icon_file.content_type
         conn = get_db_connection()
-        # 3. Insert the binary data (icon_binary) into the database
-        conn.execute('INSERT INTO skills (name, level, category, icon, icon_mimetype) VALUES (?, ?, ?, ?, ?)',
-                     (name, level, category, icon_binary, icon_mimetype))
+        conn.execute('INSERT INTO skills (name, level, category, icon) VALUES (?, ?, ?, ?)',
+                     (name, level, category, icon))
         conn.commit()
         conn.close()
         return redirect(url_for('index'))
-        
     return render_template('add_skill.html')
-
 
 # --- DELETE SKILL ROUTE ---
 @app.route('/delete/skill/<int:id>')
