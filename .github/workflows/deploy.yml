@@ -6,14 +6,9 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Execute Remote Deployment Script
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.OCI_HOST }}
-          username: ${{ secrets.OCI_USERNAME }}
-          key: ${{ secrets.OCI_KEY }}
-          script: |
-            cd /home/opc/Abdulaziz-portfilio
-            ./deploy.sh
+      - name: Run local deploy script
+        run: |
+          cd /home/opc/Abdulaziz-portfilio
+          ./deploy.sh
