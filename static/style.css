@@ -149,11 +149,16 @@ a:hover {
 /* SECTIONS */
 
 section {
-  padding-top: 4vh;
-  height: 96vh;
-  margin: 0 10rem;
+  padding: 8vh 0; /* Creates vertical breathing room between sections */
+  margin: 0 auto; /* Centers the section content */
+  width: 90%; 
+  max-width: 1200px;
   box-sizing: border-box;
-  min-height: fit-content;
+  min-height: fit-content; /* Allows section to grow with content */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .section-container {
@@ -164,20 +169,26 @@ section {
 
 #profile {
   display: flex;
+  flex-direction: row; /* Force the pic and text side-by-side */
   justify-content: center;
-  gap: 5rem;
-  height: 80vh;
+  align-items: center; /* Vertically centers the text block relative to the pic */
+  gap: 5rem; /* Space between the image and the text */
+  height: auto;
+  min-height: 80vh;
 }
 
 .section__pic-container {
-  display:flex;
-  height: 400px;
+  display: flex;
+  height: 400px; /* Larger size for desktop */
   width: 400px;
-  margin: auto 0;
 }
 
-.profile_pic{
-  border-radius: 9rem;
+.profile_pic {
+  /* To match image_31f7c3.jpg, use rounded corners instead of a full circle */
+  border-radius: 4rem; 
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Keeps the face from distorting */
 }
 
 .section__text {
@@ -270,15 +281,20 @@ section {
 #about {
   position: relative;
 }
-
 .about-containers {
+  display: flex;
+  justify-content: center; /* Centers the skill/project cards */
+  flex-wrap: wrap; /* Allows cards to wrap correctly on smaller screens */
   gap: 2rem;
-  margin-bottom: 2rem;
-  margin-top: 2rem;
-  justify-content: center;
+  margin: 2rem auto; /* Centers the whole container block */
   width: 100%;
-  max-width: 1000px;
 }
+#certificates .about-containers {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Keeps titles aligned at the top */
+}
+
 
 .about-details-container {
   justify-content: center;
@@ -350,10 +366,13 @@ section {
   margin-bottom: 2rem;
 }
 
+
 .experience-details-container {
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-direction: column;
+  width: 100%;
 }
 
 .article-container {

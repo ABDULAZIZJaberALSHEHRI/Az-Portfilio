@@ -53,8 +53,11 @@
     height: 40vh;
   }
   #profile {
-    height: 83vh;
-    margin-bottom: 0;
+    height: auto; /* Let the section grow with the content */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
   }
   article {
     font-size: 1rem;
@@ -90,9 +93,15 @@
     text-align: center;
   }
   .section__pic-container {
-    width: auto;
-    height: 46vw;
-    justify-content: center;
+    width: 70vw; /* Use viewport width for responsive sizing */
+    height: 70vw; /* Keep height equal to width for a perfect circle */
+    margin: 0 auto 2rem;
+  }
+  .profile_pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Prevents the "oval" distortion */
+    border-radius: 50%;
   }
   .section__text__p2 {
     font-size: 1.25rem;
