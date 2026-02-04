@@ -22,3 +22,4 @@ EXPOSE 5000
 
 # Start the app with gunicorn
 CMD [ "gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+#
