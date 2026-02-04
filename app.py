@@ -191,7 +191,7 @@ def login():
         user_input = request.form.get('password') 
         
         # Compare it against the password stored in your .env file
-        if user_input == os.getenv('ADMIN_PASSWORD'): 
+        if user_input == os.environ.get('ADMIN_PASSWORD'): 
             session['logged_in'] = True
             return redirect(url_for('index'))
         else:
@@ -410,6 +410,6 @@ def delete_project(id):
 if __name__ == '__main__':
     # Get port from environment variable or default to 5000 for local development
     port = int(os.getenv('PORT', 5000))
-    debug = os.getenv('FLASK_ENV') != 'production'
+    debug = os.environ.get('SECRET_KEY', 'a-very-secret-fallback-key') != 'production'
     app.run(host='0.0.0.0', port=port, debug=debug)
 
