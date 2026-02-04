@@ -8,8 +8,8 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')  # Change this for your OCI production
-DB_PATH = 'database.db'
-
+DB_PATH = os.environ.get('DATABASE_URL', '/app/instance/database.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_PATH}'
 UPLOAD_FOLDER = 'static/assets/certificates' # Path for certificates
 PROJECT_FOLDER = 'static/assets' # Path for projects
 ALLOWED_EXTENSIONS = {'pdf','png', 'jpg', 'jpeg', 'gif'} # Security whitelist
