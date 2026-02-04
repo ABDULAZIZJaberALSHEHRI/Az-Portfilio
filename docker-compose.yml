@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  portfolio:
+    build: .
+    container_name: az-portfolio-app
+    restart: always
+    ports:
+      - "5000:5000"
+    volumes:
+      - portfolio-data:/app/instance
+    environment:
+      - DATABASE_URL=/app/instance/database.db
+
+volumes:
+  portfolio-data:
+  

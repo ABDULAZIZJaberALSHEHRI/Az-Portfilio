@@ -1,8 +1,8 @@
 venv/
-.env
 __pycache__/
 *.pyc
-.git/
-.github/
 .env
+.git/
+.gitignore
+.github/
 database.db
